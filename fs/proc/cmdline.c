@@ -38,6 +38,16 @@ static void proc_command_line_init(void) {
 	char *offset_addr;
 	strcpy(proc_command_line, saved_command_line);
 
+#ifdef CONFIG_KSU_SUSFS_SPOOF_CMDLINE_OR_BOOTCONFIG
+extern int susfs_spoof_cmdline_or_bootconfig(struct seq_file *m);
+#endif
+
+#ifdef CONFIG_KSU_SUSFS_SPOOF_CMDLINE_OR_BOOTCONFIG
+       if (!susfs_spoof_cmdline_or_bootconfig(m)) {
+               seq_putc(m, '\n');
+	       return 0;
+       }
+#endif
 #ifdef CONFIG_INITRAMFS_IGNORE_SKIP_FLAG
 	offset_addr = strstr(proc_command_line, INITRAMFS_STR_FIND);
 	if (offset_addr)
