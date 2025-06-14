@@ -25,7 +25,7 @@ jobs:
           echo "EOF" >> $GITHUB_OUTPUT
       - name: "Set builddate"
         id: generate-builddate
-        run: echo "builddate=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
+        run: echo "builddate=$(date '+%Y%m%d-%H%M')" >> $GITHUB_OUTPUT
 
   Build-Kernel:
     name: "Build kernel"
@@ -219,7 +219,7 @@ jobs:
         if: ${{ env.useAnykernel == 'true' }}
         env:
           arch: ${{ steps.generate-args.outputs.ARCH }}
-          anykernel: "${{ env.WORKSPACE }}/${{ env.KERNEL_DEVICE }}-Next-SuSFS-${{ env.builddate }}"
+          anykernel: "Vantom-KSUNext-${{ env.builddate }}"
         run: |
           ls -al
 
@@ -246,5 +246,5 @@ jobs:
         uses: actions/upload-artifact@v4
         if: ${{ env.useAnykernel == 'true' }}
         with:
-          name: "${{ env.KERNEL_DEVICE }}-Next-SuSFS-${{ env.builddate }}"
+          name: "Vantom-KSUNext-${{ env.builddate }}"
           path: AnyKernel3/*
