@@ -240,7 +240,6 @@ jobs:
           fi
 
           cd AnyKernel3/
-          zip -q -r "${{ env.anykernel }}.zip" *
 
       - name: "Upload AnyKernel3 image"
         uses: actions/upload-artifact@v4
