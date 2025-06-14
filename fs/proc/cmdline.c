@@ -4,6 +4,10 @@
 #include <linux/proc_fs.h>
 #include <linux/seq_file.h>
 
+#ifdef CONFIG_KSU_SUSFS_SPOOF_CMDLINE_OR_BOOTCONFIG
+extern int susfs_spoof_cmdline_or_bootconfig(struct seq_file *m);
+#endif
+
 #if defined (CONFIG_INITRAMFS_IGNORE_SKIP_FLAG) \
 	|| defined(CONFIG_CMDLINE_HWC_IS_SKU) \
 	|| defined(CONFIG_CMDLINE_HWC_IS_PRODUCT_SKU)
@@ -38,16 +42,6 @@ static void proc_command_line_init(void) {
 	char *offset_addr;
 	strcpy(proc_command_line, saved_command_line);
 
-#ifdef CONFIG_KSU_SUSFS_SPOOF_CMDLINE_OR_BOOTCONFIG
-extern int susfs_spoof_cmdline_or_bootconfig(struct seq_file *m);
-#endif
-
-#ifdef CONFIG_KSU_SUSFS_SPOOF_CMDLINE_OR_BOOTCONFIG
-       if (!susfs_spoof_cmdline_or_bootconfig(m)) {
-               seq_putc(m, '\n');
-	       return 0;
-       }
-#endif
 #ifdef CONFIG_INITRAMFS_IGNORE_SKIP_FLAG
 	offset_addr = strstr(proc_command_line, INITRAMFS_STR_FIND);
 	if (offset_addr)
@@ -83,6 +77,12 @@ extern int susfs_spoof_cmdline_or_bootconfig(struct seq_file *m);
 
 static int cmdline_proc_show(struct seq_file *m, void *v)
 {
+#ifdef CONFIG_KSU_SUSFS_SPOOF_CMDLINE_OR_BOOTCONFIG
+       if (!susfs_spoof_cmdline_or_bootconfig(m)) {
+               seq_putc(m, '\n');
+	       return 0;
+       }
+#endif
 #ifdef ALTER_CMDLINE
 	seq_printf(m, "%s\n", proc_command_line);
 #else
